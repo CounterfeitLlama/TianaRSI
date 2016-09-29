@@ -1,1 +1,1 @@
-# RSI
+# Research and Scientific Inquiry
