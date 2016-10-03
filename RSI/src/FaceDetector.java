@@ -60,8 +60,9 @@ public class FaceDetector {
     
     public void initializePaths() {
     	// Initialize all paths depending on OS
-        if (OS.equals("windows")) {
+        if (OS.equals("Windows 10")) {
         	faceDetectorPath = HOME + "\\Downloads\\opencv\\build\\etc\\haarcascades\\haarcascade_frontalface_alt.xml";
+        	eyeDetectorPath = HOME + "\\Downloads\\opencv\\build\\haarcascades\\haarcascade_eye.xml";
         	imagePath = HOME + "\\Desktop\\startrek.jpg";
         	outputPath = HOME + "\\Desktop\\output.jpg";
         }
