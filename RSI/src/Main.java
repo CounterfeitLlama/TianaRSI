@@ -2,9 +2,17 @@ import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) {
+		//System.getProperties().list(System.out);
+        System.out.println("Starting...");
+        System.out.println("Operating System: " + System.getProperty("os.name"));
+        System.out.println("OS Version: " + System.getProperty("os.version"));
+        System.out.println("Bit count: " + System.getProperty("sun.arch.data.model"));
+        System.out.println("Java Verion: " + System.getProperty("java.version"));
+        
 		Scanner input = new Scanner(System.in);
-		System.out.println("Activate camera? (y/n)");
+		System.out.print("\nActivate camera? (y/n): ");
 		String activate = input.next().toLowerCase();
+		input.close();
 		switch (activate) {
 			case "y":
 				FaceDetector faceDetector = new FaceDetector();
