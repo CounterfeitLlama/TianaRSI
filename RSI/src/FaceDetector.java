@@ -21,9 +21,6 @@ public class FaceDetector {
 	}
 	
     public void run() {
-    	// System.getProperties().list(System.out);
-        System.out.println("Starting...");
-        System.out.println("Operating System: " + OS);
     	System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     	
     	VideoCapture camera = new VideoCapture(0);
