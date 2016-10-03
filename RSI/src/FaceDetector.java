@@ -8,42 +8,26 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 public class FaceDetector {
-	final String OS = System.getProperty("sun.desktop");
+	final String OS = System.getProperty("os.name");
 	final String HOME = System.getProperty("user.home");
+	String faceDetectorPath;
+	String imagePath;
+	String outputPath;
 	
     public void run() {
     	//System.getProperties().list(System.out);
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         System.out.println("Starting...");
         System.out.println("Operating System: " + OS);
-
-        // Open the facial recognition file depending on the OS
-        CascadeClassifier faceDetector = null;
-        if (OS.equals("windows")) {
-        	faceDetector = new CascadeClassifier(HOME + "\\Downloads\\opencv\\build\\etc\\haarcascades\\haarcascade_frontalface_alt.xml");
-        }
-        else if (OS.equals("mac")) {
-        	faceDetector = new CascadeClassifier(HOME + "/Downloads/opencv-master/data/haarcascades/haarcascade_frontalface_alt.xml");
-        }
         
-        // Check if faceDetector was initialized
-        if (faceDetector == null) {
-        	throw new NullPointerException("FaceDetector is null, bad OS");
-        }
+        //Set file paths
+        initializePaths();
+
+        // Open the facial recognition file
+        CascadeClassifier faceDetector = new CascadeClassifier(faceDetectorPath);
         
         // Read in face to detect
-        Mat image = null;
-        if (OS.equals("windows")) {
-        	image = Imgcodecs.imread(HOME + "\\Desktop\\startrek.jpg");
-        }
-        else if (OS.equals("mac")) {
-        	image = Imgcodecs.imread(HOME + "/Desktop/startrek.jpg");
-        }
-        
-        // Check if image was initialized properly
-        if (image == null) {
-        	throw new NullPointerException("Image is null, no image found");
-        }
+        Mat image = Imgcodecs.imread(imagePath);
  
         // Detect faces in the image
         MatOfRect faceDetections = new MatOfRect();
@@ -59,15 +43,22 @@ public class FaceDetector {
         }
  
         // Save the new file with rectangles displaying the detected faces
-        String filename = null;
+        System.out.println(String.format("Done. Writing %s", outputPath));
+        Imgcodecs.imwrite(outputPath, image);
+    }
+    
+    public void initializePaths() {
+    	// Initialize all paths depending on OS
         if (OS.equals("windows")) {
-        	filename = HOME + "\\Desktop\\output.jpg";
+        	faceDetectorPath = HOME + "\\Downloads\\opencv\\build\\etc\\haarcascades\\haarcascade_frontalface_alt.xml";
+        	imagePath = HOME + "\\Desktop\\startrek.jpg";
+        	outputPath = HOME + "\\Desktop\\output.jpg";
         }
-        else if (OS.equals("mac")) {
-        	filename = HOME + "/Desktop/ouput.jpg";
+        else if (OS.equals("Mac OS X")) {
+        	faceDetectorPath = HOME + "/Downloads/opencv-master/data/haarcascades/haarcascade_frontalface_alt.xml";
+        	imagePath = HOME + "/Desktop/startrek.jpg";
+        	outputPath = HOME + "/Desktop/output.jpg";
         }
-        System.out.println(String.format("Done. Writing %s", filename));
-        Imgcodecs.imwrite(filename, image);
     }
  
     public static void main (String[] args) {
