@@ -16,36 +16,28 @@ public class FaceDetector {
 	String imagePath;
 	String outputPath;
 	
+	public FaceDetector() {
+		this.run();
+	}
+	
     public void run() {
-    	//System.getProperties().list(System.out);
+    	// System.getProperties().list(System.out);
         System.out.println("Starting...");
         System.out.println("Operating System: " + OS);
-        
-        //Set file paths
+    	System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    	
+    	VideoCapture camera = new VideoCapture(0);
+    	Mat image = new Mat();
+    	camera.retrieve(image);
+
+    	// Set file paths
         initializePaths();
         
-        // Open the facial recognition file
-        CascadeClassifier faceDetector = new CascadeClassifier(faceDetectorPath);
-        
         // Read in face to detect
-        Mat image = Imgcodecs.imread(imagePath);
- 
-        // Detect faces in the image
-        MatOfRect faceDetections = new MatOfRect();
-        faceDetector.detectMultiScale(image, faceDetections);
+        //Mat image = Imgcodecs.imread(imagePath);
         
-        // Display how many faces were found
-        System.out.println(String.format("Detected %s faces", faceDetections.toArray().length));
- 
-        // For each face that is detected, create a rectangle surrounding it
-        for (Rect rect : faceDetections.toArray()) {
-            Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height),
-                    new Scalar(0, 255, 0));
-        }
- 
-        // Save the new file with rectangles displaying the detected faces
-        System.out.println(String.format("Done. Writing %s", outputPath));
-        //Imgcodecs.imwrite(outputPath, image);
+        // Detect faces and save image
+        detectFaces(image);
     }
     
     public void initializePaths() {
@@ -61,14 +53,26 @@ public class FaceDetector {
         	outputPath = HOME + "/Desktop/output.jpg";
         }
     }
+    
+    public void detectFaces(Mat image) {
+        // Open the facial recognition file
+        CascadeClassifier faceDetector = new CascadeClassifier(faceDetectorPath);
+        
+        // Detect faces in the image
+        MatOfRect faceDetections = new MatOfRect();
+        faceDetector.detectMultiScale(image, faceDetections);
+        
+        // Display how many faces were found
+        System.out.println(String.format("Detected %s faces", faceDetections.toArray().length));
  
-    public static void main (String[] args) {
-    	System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    	VideoCapture camera = new VideoCapture(0);
-    	Mat image = new Mat();
-    	camera.retrieve(image);
-        Imgcodecs.imwrite(System.getProperty("user.home") + "/Desktop/output.jpg", image );
-    	FaceDetector fd = new FaceDetector();
-    	fd.run();
+        // For each face that is detected, create a rectangle surrounding it
+        for (Rect rect : faceDetections.toArray()) {
+            Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height),
+                    new Scalar(0, 255, 0));
+        }
+        
+        // Save the new file with rectangles displaying the detected faces
+        System.out.println(String.format("Done. Writing %s", outputPath));
+        Imgcodecs.imwrite(outputPath, image);
     }
 }
