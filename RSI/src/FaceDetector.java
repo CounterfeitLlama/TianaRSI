@@ -7,6 +7,8 @@ import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.videoio.VideoCapture;
+
 public class FaceDetector {
 	final String OS = System.getProperty("os.name");
 	final String HOME = System.getProperty("user.home");
@@ -16,13 +18,12 @@ public class FaceDetector {
 	
     public void run() {
     	//System.getProperties().list(System.out);
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         System.out.println("Starting...");
         System.out.println("Operating System: " + OS);
         
         //Set file paths
         initializePaths();
-
+        
         // Open the facial recognition file
         CascadeClassifier faceDetector = new CascadeClassifier(faceDetectorPath);
         
@@ -44,7 +45,7 @@ public class FaceDetector {
  
         // Save the new file with rectangles displaying the detected faces
         System.out.println(String.format("Done. Writing %s", outputPath));
-        Imgcodecs.imwrite(outputPath, image);
+        //Imgcodecs.imwrite(outputPath, image);
     }
     
     public void initializePaths() {
@@ -62,6 +63,11 @@ public class FaceDetector {
     }
  
     public static void main (String[] args) {
+    	System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    	VideoCapture camera = new VideoCapture(0);
+    	Mat image = new Mat();
+    	camera.retrieve(image);
+        Imgcodecs.imwrite(System.getProperty("user.home") + "/Desktop/output.jpg", image );
     	FaceDetector fd = new FaceDetector();
     	fd.run();
     }
