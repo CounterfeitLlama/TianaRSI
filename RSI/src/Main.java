@@ -15,13 +15,13 @@ public class Main {
 		input.close();
 		switch (activate) {
 			case "y":
-				FaceDetector faceDetector = new FaceDetector();
+				new FaceDetector();
 				break;
 			case "n":
 				System.out.println("Exiting...");
 				System.exit(0);
 			default:
-				System.out.println("Invalid input\nExiting...");
+				System.out.println("Invalid input.\nExiting...");
 				System.exit(0);
 		}
 	}
