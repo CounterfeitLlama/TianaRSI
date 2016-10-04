@@ -14,7 +14,19 @@ public class Main {
 		String activate = input.next().toLowerCase();
 		switch (activate) {
 			case "y":
-				new FaceDetector();
+				System.out.print("External camera? (y/n): ");
+				activate = input.next().toLowerCase();
+				switch (activate) {
+					case "y":
+						new FaceDetector(1);
+						break;
+					case "n":
+						new FaceDetector(0);
+						break;
+					default:
+						System.out.println("Invalid input. Trying native camera...");
+						new FaceDetector(0);
+				}
 				break;
 			case "n":
 				System.out.println("Exiting...");

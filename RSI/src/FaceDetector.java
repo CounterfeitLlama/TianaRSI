@@ -16,20 +16,24 @@ public class FaceDetector {
 	String imagePath;
 	String outputPath;
 	
+	int camNumber = 0;
+	
 	CascadeClassifier faceDetector;
 	CascadeClassifier eyeDetector;
 	
 	/**
 	 * Constructor for the FaceDetector class
 	 */
-	public FaceDetector() {
-		this.run();
+	public FaceDetector(int camera) {
+		this.run(camera);
 	}
 	
 	/**
 	 * Automatically run when constructor is created
 	 */
-    public void run() {
+    public void run(int camNum) {
+    	camNumber = camNum;
+    	
     	// Load library
     	System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     	
@@ -41,7 +45,7 @@ public class FaceDetector {
         eyeDetector = new CascadeClassifier(eyeDetectorPath);
         Detection detector = new Detection();
     	
-    	VideoCapture camera = new VideoCapture(0);
+    	VideoCapture camera = new VideoCapture(camNum);
     	Mat frame = new Mat();
         JFrame jframe = new JFrame("Live Video");
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -125,11 +129,11 @@ public class FaceDetector {
 				System.out.println("Exiting...");
 				System.exit(0);
 			case "n":
-				System.out.println("Activate camera? (y/n)");
+				System.out.println("Activate camera? (y/n): ");
 				String activate = in.next();
 				switch (activate) {
 					case "y":
-						run();
+						run(camNumber);
 					case "n":
 						System.out.println("Exiting...");
 						System.exit(0);
