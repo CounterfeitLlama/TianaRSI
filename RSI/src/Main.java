@@ -12,7 +12,6 @@ public class Main {
 		Scanner input = new Scanner(System.in);
 		System.out.print("\nActivate camera? (y/n): ");
 		String activate = input.next().toLowerCase();
-		input.close();
 		switch (activate) {
 			case "y":
 				new FaceDetector();

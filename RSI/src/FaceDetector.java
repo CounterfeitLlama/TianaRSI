@@ -58,11 +58,15 @@ public class FaceDetector {
         	@Override
         	public void keyPressed(KeyEvent e) { // This one is important
         		String pressedKey = KeyEvent.getKeyText(e.getKeyCode());
-        		if (pressedKey.equals("Escape")) {
+        		if (pressedKey.equals("⎋") && OS.equals("Mac OS X")) {
         			jframe.dispose();
         			quit();
         		}
-        		//System.out.println("Key Character: " + e.getKeyChar() + "; Key Code: " + KeyEvent.getKeyText(e.getKeyCode()));
+        		else if (pressedKey.equals("Escape") && OS.equals("Windows 10")) {
+        			jframe.dispose();
+        			quit();
+        		}
+        		System.out.println("Key Character: " + e.getKeyChar() + "; Key Code: " + KeyEvent.getKeyText(e.getKeyCode()));
         	}
         	});
 
@@ -134,6 +138,5 @@ public class FaceDetector {
 						System.exit(1);
 				}
 		}
-		in.close();
     }
 }
