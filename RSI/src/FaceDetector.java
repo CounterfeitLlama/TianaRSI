@@ -76,8 +76,8 @@ public class FaceDetector {
 
         while (true) {
             if (camera.read(frame)) {
-            	detector.detect(faceDetector, frame);
-            	//detector.detect(eyeDetector, frame);
+            	//detector.detect(faceDetector, frame);
+            	detector.detect(eyeDetector, frame);
                 ImageIcon image = new ImageIcon(mat2Img(frame));
                 vidpanel.setIcon(image);
                 vidpanel.repaint();
@@ -92,7 +92,7 @@ public class FaceDetector {
     	 */
         if (OS.equals("Windows 10")) {
         	faceDetectorPath = HOME + "\\Downloads\\opencv\\build\\etc\\haarcascades\\haarcascade_frontalface_alt.xml";
-        	eyeDetectorPath = HOME + "\\Downloads\\opencv\\build\\etc\\haarcascades\\haarcascade_eye.xml";
+        	eyeDetectorPath = HOME + "\\Downloads\\opencv\\build\\etc\\haarcascades\\frontEyes.xml";
         	imagePath = HOME + "\\Desktop\\startrek.jpg";
         	outputPath = HOME + "\\Desktop\\output.jpg";
         }
