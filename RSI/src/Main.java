@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InvalidInputException {
 		//System.getProperties().list(System.out);
         System.out.println("Starting...");
         System.out.println("Operating System: " + System.getProperty("os.name"));
@@ -10,30 +10,23 @@ public class Main {
         System.out.println("Java Verion: " + System.getProperty("java.version"));
         
 		Scanner input = new Scanner(System.in);
-		System.out.print("\nActivate camera? (y/n): ");
-		String activate = input.next().toLowerCase();
-		switch (activate) {
-			case "y":
-				System.out.print("External camera? (y/n): ");
-				activate = input.next().toLowerCase();
-				switch (activate) {
-					case "y":
-						new FaceDetector(1);
+		while (true) {
+			System.out.println("Activate which camera? (-1 for exit): ");
+			String num = input.next();
+			switch (num) {
+				case "-1":
+					System.out.println("Exiting...");
+					System.exit(0);
+				default:
+					try {
+						int cameraNumber = Integer.parseInt(num);
+						new FaceDetector(cameraNumber);
 						break;
-					case "n":
-						new FaceDetector(0);
-						break;
-					default:
-						System.out.println("Invalid input. Trying native camera...");
-						new FaceDetector(0);
-				}
-				break;
-			case "n":
-				System.out.println("Exiting...");
-				System.exit(0);
-			default:
-				System.out.println("Invalid input.\nExiting...");
-				System.exit(0);
+					}
+					catch (Exception e) {
+						throw new InvalidInputException();
+					}
+			}
 		}
 	}
 }
