@@ -122,25 +122,34 @@ public class FaceDetector {
      */
     public void quit() {
 		Scanner in = new Scanner(System.in);
-    	System.out.print("Quit program? (y/n): ");
-		String quit = in.next();
-		switch (quit) {
-			case "y":
-				System.out.println("Exiting...");
-				System.exit(0);
-			case "n":
-				System.out.println("Activate camera? (y/n): ");
-				String activate = in.next();
-				switch (activate) {
-					case "y":
-						run(camNumber);
-					case "n":
-						System.out.println("Exiting...");
-						System.exit(0);
-					default:
-						System.out.println("Invalid input.\n Exiting anyways...");
-						System.exit(1);
-				}
+		while (true) {
+	    	System.out.print("Quit program? (y/n): ");
+			String quit = in.next();
+			switch (quit) {
+				case "y":
+					System.out.println("Exiting...");
+					System.exit(0);
+				case "n":
+					while (true) {
+						System.out.println("Activate which camera? (-1 for exit): ");
+						String num = in.next();
+						switch (num) {
+							case "-1":
+								System.out.println("Exiting...");
+								System.exit(0);
+							default:
+								try {
+									run(Integer.parseInt(num));
+									break;
+								}
+								catch (Exception e) {
+									System.out.println(e.getMessage());
+								}
+						}
+					}
+				default:
+					System.out.println("Invalid response...");
+			}
 		}
     }
 }
