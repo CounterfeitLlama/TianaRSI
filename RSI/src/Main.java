@@ -1,82 +1,90 @@
-import java.awt.*;       // Using AWT layouts
-import java.awt.event.*; // Using AWT event classes and listener interfaces
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.awt.*;     // Using AWT's Graphics and Color
 import java.net.URL;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;    // Using Swing components and containers
-
-// A Swing GUI application inherits from top-level container javax.swing.JFrame
-public class Main extends JFrame {   // JFrame instead of Frame
-	private JTextField tfCount;  // Use Swing's JTextField instead of AWT's TextField
-	private JButton btnCount;    // Using Swing's JButton instead of AWT's Button
-	private int count = 0;
-
-	// Constructor to setup the GUI components and event handlers
-	public Main() throws MalformedURLException, IOException {
-		initComponents();
-	}
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new Main();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+import javax.swing.*;  // Using Swing's components and container
+import java.util.Random;
+ 
+/** Test drawImage() thru ImageIcon */
+@SuppressWarnings("serial")
+public class Main extends JFrame {
+   // Define constants for the various dimensions
+   public static final int ROWS = 3;
+   public static final int COLS = 3;
+   public static final int IMAGE_SIZE = 50;
+   public static final int PADDING = 20;  // padding from the border
+   public static final int CELL_SIZE = IMAGE_SIZE + 2 * PADDING;
+   public static final int CANVAS_SIZE = CELL_SIZE * ROWS;
+ 
+   private DrawCanvas canvas;    // The drawing canvas (an inner class extends JPanel)
+   private Random random = new Random(); // for picking images in random
+ 
+   // Images
+   private String imgCrossFilename = "images/cross.gif";
+   private String imgNoughtFilename = "images/nought.gif";
+   private Image imgCross;   // drawImage() uses an Image object
+   private Image imgNought;
+ 
+   // Constructor to set up the GUI components and event handlers
+   public Main() {
+      // Prepare the ImageIcon and Image objects for drawImage()
+      ImageIcon iconCross = null;
+      ImageIcon iconNought = null;
+      URL imgURL = getClass().getClassLoader().getResource(imgCrossFilename);
+      if (imgURL != null) {
+         iconCross = new ImageIcon(imgURL);
+      } else {
+         System.err.println("Couldn't find file: " + imgCrossFilename);
+      }
+      imgCross = iconCross.getImage();
+ 
+      imgURL = getClass().getClassLoader().getResource(imgNoughtFilename);
+      if (imgURL != null) {
+         iconNought = new ImageIcon(imgURL);
+      } else {
+         System.err.println("Couldn't find file: " + imgNoughtFilename);
+      }
+      imgNought = iconNought.getImage();
+ 
+      canvas = new DrawCanvas();
+      canvas.setPreferredSize(new Dimension(CANVAS_SIZE, CANVAS_SIZE));
+      setContentPane(canvas);  // use JPanel as content-pane
+      setDefaultCloseOperation(EXIT_ON_CLOSE);
+      pack();  // pack the components of "super" JFrame
+      setTitle("Test drawImage()");
+      setVisible(true);
+   }
+ 
+   // Define inner class DrawCanvas, which is a JPanel used for custom drawing
+   private class DrawCanvas extends JPanel {
+      @Override
+      public void paintComponent(Graphics g) {
+         super.paintComponent(g);
+         setBackground(Color.WHITE);  // Set background color for this JPanel
+         // Drawing Images (picked in random)
+         for (int row = 0; row < ROWS; ++row) {
+            for (int col = 0; col < COLS; ++col) {
+               boolean useCross = random.nextBoolean();
+               Image img = useCross ? imgCross : imgNought;
+               g.drawImage(img,
+                     CELL_SIZE * col + PADDING, CELL_SIZE * row + PADDING,
+                     IMAGE_SIZE, IMAGE_SIZE, null);
             }
-        });
-    }
-
-    private void initComponents() throws MalformedURLException, IOException {
-		// Retrieve the content-pane of the top-level container JFrame
-		// All operations done on the content-pane
-		//Container cp = getContentPane();
-		//cp.setLayout(new FlowLayout());   // The content-pane sets its layout
-		
-        JFrame frame = new JFrame("Frame with JPanel and background");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-		frame.add(new JLabel("Counter"));
-		tfCount = new JTextField("0", 10);
-		tfCount.
-		tfCount.setEditable(false);
-		frame.add(tfCount);
-
-		btnCount = new JButton("Count");
-		frame.add(btnCount);
-
-		// Allocate an anonymous instance of an anonymous inner class that
-		//  implements ActionListener as ActionEvent listener
-		btnCount.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				++count;
-				tfCount.setText(count + "");
-			}
-		});
-		
-        final Image background = ImageUtils.scaleImage(300, 300, ImageIO.read(new URL("https://lh4.googleusercontent.com/enVZiSNpLcn_qa1u8iLJHT8NcxqE4TGuShfiKvgXuR6EmK_2bB3f5W4ptSI2HctW8byaK6WcZQ%3Ds640-h400-e365")));
-        final Dimension jpanelDimensions = new Dimension(new ImageIcon(background).getIconWidth(), new ImageIcon(background).getIconHeight());
-
-        frame.add(new JPanel() {
-            @Override
-            protected void paintComponent(Graphics grphcs) {
-                super.paintComponent(grphcs);
-                grphcs.drawImage(background, 0, 0, this);
-            }
-
-            @Override
-            public Dimension getPreferredSize() {
-                return jpanelDimensions;
-            }
-        });
-
-        frame.setResizable(true);
-        frame.pack();
-        frame.setVisible(true);
-    }
+         }
+         // Draw Borders
+         g.fill3DRect(CELL_SIZE - 2, 0, 4, CELL_SIZE * 3, true);
+         g.fill3DRect(CELL_SIZE * 2 - 2, 0, 4, CELL_SIZE * 3, true);
+         g.fill3DRect(0, CELL_SIZE - 2, CELL_SIZE * 3, 4, true);
+         g.fill3DRect(0, CELL_SIZE * 2 - 2, CELL_SIZE * 3, 4, true);
+      }
+   }
+ 
+   // The entry main method
+   public static void main(String[] args) {
+      // Run the GUI codes on the Event-Dispatching thread for thread-safety
+      SwingUtilities.invokeLater(new Runnable() {
+         @Override
+         public void run() {
+            new Main(); // Let the constructor do the job
+         }
+      });
+   }
 }
